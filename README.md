@@ -30,4 +30,4 @@ git commit -m '<commit_message>'
 
 ## Contributors
 - Nguyen, Kim Anh (563958)
-- Melchert, Niklas (xxx)
+- Melchert, Niklas (560671)
