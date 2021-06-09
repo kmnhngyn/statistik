@@ -13,6 +13,6 @@
 server <- function(input, output) {
   
   output$selected_var <- renderText({
-    paste("Deine Aushwal ist ", input$var)
+    paste("Deine Auswahl ist ", input$var)
   })
 }
