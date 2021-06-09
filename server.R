@@ -4,14 +4,15 @@
 # The server will be where you load in and wrangle data,
 # then define your outputs (i.e. plots) using input from the UI.
 
+# Load libraries, data
+#library(ggplot2)
+#characters <- read.csv(url("www"))
+
+
+# Create server
 server <- function(input, output) {
   
-  output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  output$selected_var <- renderText({
+    paste("Deine Aushwal ist ", input$var)
   })
 }
