@@ -21,9 +21,11 @@ git config --global user.password "your password"
   -   this is your password for git
 - Push to repo
 ```bash
-# add all files
+# first pull new changes
+git pull
+# then add all files of local stack
 git add .
-# then commit
+# then commit to remote
 git commit -m '<commit_message>'
 ```
 - Sync GitHub repository with existing R project: https://hansenjohnson.org/post/sync-github-repository-with-existing-r-project/
