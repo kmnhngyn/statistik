@@ -90,9 +90,46 @@ daten_panel <- tabPanel(
     daten_sidebar, daten_main
   )
 )
+#--------------------------------------------------------------------------------------------------------
+#Page 3 - Slider für das Festlegen der Größe der Konfidenzintervalle
+konfi_sidebar <- sidebarPanel(
+  inputPanel(
+    sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
+  ),
+  inputPanel(
+    sliderInput("upperBoundary", "Obere Grenze", min = 0, max = 100, step = 1, value = 7)
+  ),
+  selectInput(
+    "analyticType",
+    label = "Welchen Wert möchtest du gernauer betrachten?",
+    #select_values = colnames(data),
+    #choices = colnames(data),
+    #selected = "Speed"
+    choices = c( "Alle Werte",
+                 "Nitrat-NO3",
+                 "CO2"),
+    selected = "Nitrat"
+  )
+)
 
+#Page 3 - Anzeigen des Konfidenzintervalls (Mit Selector für welchen Wert dies berechnet werden soll???)
+konfi_main <- fluidPage(
+  plotOutput("aquarium_plot"),
+ # plot(1, sapply(2, function(z) erwartete_kosten(z)), xlab = "Anzahl bestellter Ersatzteile", pch=16, col="darkblue", cex=2,
+ #      ylab = "Kosten", main = "Gesamtkosten für Lagerung und Nachbestellungen über der Anzahl bestellter Ersatzteile")
+ 
+)
 
-# Page 3 - Vizualization "CSV"
+# Page 3 - Visualisierung Konfidenzintervalle
+konfi_panel <- tabPanel("Konfidenzintervalle",
+  titlePanel("Konfidenzintervalle"),
+  sidebarLayout(
+    konfi_sidebar, konfi_main
+  )
+)
+
+#--------------------------------------------------------------------------------------------------------
+# Page 4 - Vizualization "CSV"
 csv_panel <- tabPanel(
   "CSV-Umwandlung",
   titlePanel("CSV-Umwandlung"),
@@ -109,10 +146,12 @@ csv_panel <- tabPanel(
   )
 )
 
+#--------------------------------------------------------------------------------------------------------------
 # Navigation - show all tabs
 ui <- navbarPage(
   "Statistik Hausarbeit",
   intro_panel,
   daten_panel,
+  konfi_panel,
   csv_panel
 )

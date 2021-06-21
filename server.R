@@ -22,7 +22,8 @@ server <- function(input, output) {
     paste("Deine Auswahl ist ", input$var)
   })
   
-  # Main content in page 2
+#--------------------------------------------------------------------------------------------------------  
+# Main content in page 2
   
   output$mittelwert <- renderText({
     if(input$var == "Alle Werte"){
@@ -87,7 +88,14 @@ server <- function(input, output) {
     plot(nitrat_df)
   })
   
+  #--------------------------------------------------------------------------------------------------------
   # Content in page 3
+  #output$tabelHeaders <- renderPlot({
+  #  plot(nitrat_df)
+ # })
+  
+  #--------------------------------------------------------------------------------------------------------
+  # Content in page 4
   df_products_upload <- reactive({
     inFile <- input$target_upload
     if (is.null(inFile))
@@ -100,4 +108,5 @@ server <- function(input, output) {
     df <- df_products_upload()
     DT::datatable(df)
   })
+  
 }
