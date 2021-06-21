@@ -10,9 +10,9 @@ library(dplyr)
 #characters <- read.csv(url("www"))
 
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
-nitrat_df <- aquarium_df["Nitrat.NO3"]
+nitrat_df <- subset(aquarium_df, select = c("Nitrat"))
 # co2_df <- aquarium_df["CO2"]
-# nitrat_c02 <- aquarium_df[, c("Nitrat.NO3","CO2")]
+# nitrat_c02 <- aquarium_df[, c("Nitrat","CO2")]
 
 # Create server
 server <- function(input, output) {
@@ -30,7 +30,7 @@ server <- function(input, output) {
       paste ("")
     } else {
       if(input$var == "Nitrat-NO3"){
-        mean <- mean(aquarium_df$Nitrat.NO3)
+        mean <- mean(aquarium_df$Nitrat)
       } else if(input$var == "CO2"){
         mean <- mean(aquarium_df$CO2)
       }
@@ -43,7 +43,7 @@ server <- function(input, output) {
       paste("")
     } else{
       if(input$var == "Nitrat-NO3"){
-        sd <- sd(aquarium_df$Nitrat.NO3)
+        sd <- sd(aquarium_df$Nitrat)
       }
       if(input$var == "CO2"){
         sd <- sd(aquarium_df$CO2)
@@ -58,19 +58,19 @@ server <- function(input, output) {
       table_df <- aquarium_df
     }
     if(input$var == "Nitrat-NO3"){
-      table_df <- subset(aquarium_df, select = c("Date","Nitrat.NO3"))
+      table_df <- subset(aquarium_df, select = c("Date","Nitrat"))
     }
     if(input$var == "CO2"){
       table_df <- subset(aquarium_df, select = c("Date","CO2"))
     }
-    return(table_df)
+    return 
   })
   
   # table with all data
   output$all_table<- DT::renderDataTable({
     # aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
     # DT::datatable(aquarium_df)
-    # nitrat_df <- aquarium_df["Nitrat.NO3"]
+    # nitrat_df <- aquarium_df["Nitrat"]
     paste(h2("Tabelle"))
     DT::datatable(reactive_df())
   })
@@ -79,7 +79,7 @@ server <- function(input, output) {
   output$nitrat_table<- DT::renderDataTable({
     # aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
     # DT::datatable(aquarium_df)
-    # nitrat_df <- aquarium_df["Nitrat.NO3"]
+    # nitrat_df <- aquarium_df["Nitrat"]
     DT::datatable(nitrat_df)
   })
   
@@ -90,9 +90,73 @@ server <- function(input, output) {
   
   #--------------------------------------------------------------------------------------------------------
   # Content in page 3
-  #output$tabelHeaders <- renderPlot({
-  #  plot(nitrat_df)
- # })
+  # Analysieren des Inputs - "Temperatur", "pH","Nitrat","Phosphat", "kH", "GH", "Fe", "CO2"
+  konfiWerteTyp <- reactive({
+    if(input$analyticType == "Temperatur"){
+      konfiTable <- subset(aquarium_df, select = c("Temperatur"))
+      konfiMW <- mean(konfiTable$Temperatur)
+      konfiStabw <- sd(konfiTable$Temperatur)
+      konfiLength <- length((konfiTable$Temperatur))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "pH"){
+      konfiTable <- subset(aquarium_df, select = c("pH"))
+      konfiMW <- mean(konfiTable$pH)
+      konfiStabw <- sd(konfiTable$pH)
+      konfiLength <- length((konfiTable$pH))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "Nitrat"){
+      konfiTable <- subset(aquarium_df, select = c("Nitrat"))
+      konfiMW <- mean(konfiTable$Nitrat)
+      konfiStabw <- sd(konfiTable$Nitrat)
+      konfiLength <- length((konfiTable$Nitrat))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "Phosphat"){
+      konfiTable <- subset(aquarium_df, select = c("Phosphat"))
+      konfiMW <- mean(konfiTable$Phosphat)
+      konfiStabw <- sd(konfiTable$Phosphat)
+      konfiLength <- length((konfiTable$Phosphat))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "kH"){
+      konfiTable <- subset(aquarium_df, select = c("kH"))
+      konfiMW <- mean(konfiTable$kH)
+      konfiStabw <- sd(konfiTable$kH)
+      konfiLength <- length((konfiTable$kH))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "GH"){
+      konfiTable <- subset(aquarium_df, select = c("GH"))
+      konfiMW <- mean(konfiTable$GH)
+      konfiStabw <- sd(konfiTable$GH)
+      konfiLength <- length((konfiTable$GH))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "Fe"){
+      konfiTable <- subset(aquarium_df, select = c("Fe"))
+      konfiMW <- mean(konfiTable$Fe)
+      konfiStabw <- sd(konfiTable$Fe)
+      konfiLength <- length((konfiTable$Fe))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    if(input$analyticType == "CO2"){
+      konfiTable <- subset(aquarium_df, select = c("CO2"))
+      konfiMW <- mean(konfiTable$CO2)
+      konfiStabw <- sd(konfiTable$CO2)
+      konfiLength <- length((konfiTable$CO2))
+      konfiFreiheitsgrad <- konfiLength - 1
+    }
+    return 
+  })
+  
+  output$konfiIntervall <- renderPlot({
+    #Berechnung des Konfidenzintervalls
+    
+    #Visualisieren des Konfidenzintervalls
+    plot(konfiTable)
+  })
   
   #--------------------------------------------------------------------------------------------------------
   # Content in page 4

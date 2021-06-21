@@ -103,18 +103,15 @@ konfi_sidebar <- sidebarPanel(
     "analyticType",
     label = "Welchen Wert möchtest du gernauer betrachten?",
     #select_values = colnames(data),
-    #choices = colnames(data),
-    #selected = "Speed"
-    choices = c( "Alle Werte",
-                 "Nitrat-NO3",
-                 "CO2"),
-    selected = "Nitrat"
+    choices = c("Temperatur","pH","Nitrat","Phosphat","kH","GH","Fe","CO2"),
+    selected = "Temperatur"
   )
 )
 
 #Page 3 - Anzeigen des Konfidenzintervalls (Mit Selector für welchen Wert dies berechnet werden soll???)
 konfi_main <- fluidPage(
-  plotOutput("aquarium_plot"),
+  plotOutput("konfiIntervall"),
+  
  # plot(1, sapply(2, function(z) erwartete_kosten(z)), xlab = "Anzahl bestellter Ersatzteile", pch=16, col="darkblue", cex=2,
  #      ylab = "Kosten", main = "Gesamtkosten für Lagerung und Nachbestellungen über der Anzahl bestellter Ersatzteile")
  
