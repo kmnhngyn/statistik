@@ -152,15 +152,17 @@ server <- function(input, output) {
   })
   
   output$konfiIntervall <- renderPlot({
-    #Berechnung des Konfidenzintervalls
+    #Berechnung des Konfidenzintervalls - Hilfestellung: https://www.youtube.com/watch?v=1iy1_h5FuT4
     warschein <- 1 - (input$upperBoundary- input$lowerBoundary)/100 # Warscheinlichkeit berechnen
     t_Quantil <- qt(warschein, konfiFreiheitsgrad)
-    vertrBereich <- t_Quantil * konfiStabw / sqrt(n)
+    vertrBereich <- t_Quantil * konfiStabw / sqrt(konfiLength)
     vertrBereichUnten <- konfiMW - vertrBereich
     vertrBereichOben <- konfiMW + vertrBereich
     
     #Visualisieren des Konfidenzintervalls
-    plot(konfiTable)
+    titleKonfi <- "Darstellung eines Konfidenzintervalls"
+    
+    #plot(konfiTable)
   })
   
   #--------------------------------------------------------------------------------------------------------

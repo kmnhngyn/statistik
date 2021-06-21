@@ -44,7 +44,8 @@ intro_panel <- tabPanel(
   
   h2("Quellen"),
   pre (a(href = "https://github.com/kmnhngyn/statistik", "Eigene GitHub Repo"),
-       a(href = "https://riptutorial.com/shiny/example/32449/uploading-csv-files-to-shiny", "CSV laden und darstellen (Page 3)")
+       a(href = "https://riptutorial.com/shiny/example/32449/uploading-csv-files-to-shiny", "CSV laden und darstellen (Page 3)"),
+       a(href = "https://www.youtube.com/watch?v=1iy1_h5FuT4", "Berechnung von Konfidenzintervallen")
       )
 )
 
