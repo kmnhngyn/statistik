@@ -7,7 +7,6 @@
 # Load libraries, data
 library(dplyr)
 #library(ggplot2)
-#characters <- read.csv(url("www"))
 
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
 nitrat_df <- aquarium_df["Nitrat.NO3"]
@@ -17,13 +16,14 @@ nitrat_df <- aquarium_df["Nitrat.NO3"]
 # Create server
 server <- function(input, output) {
   
-  # Side panel in page 2
+  # PAGE 2: Side panel
   output$selected_var <- renderText({
     paste("Deine Auswahl ist ", input$var)
   })
   
-  # Main content in page 2
+  # PAGE 2: main content
   
+  # PAGE 2: mean
   output$mittelwert <- renderText({
     if(input$var == "Alle Werte"){
       paste ("")
@@ -37,6 +37,7 @@ server <- function(input, output) {
     }
   })
   
+  # PAGE 2: stadnard deviation
   output$standardabweichung <- renderText({
     if(input$var == "Alle Werte"){
       paste("")
@@ -51,7 +52,8 @@ server <- function(input, output) {
     }
   })
   
-  # dynamic output table
+  # function to set df based on user input
+  # necessary for dynamic table view output
   reactive_df <- reactive({
     if(input$var == "Alle Werte"){
       table_df <- aquarium_df
@@ -65,7 +67,7 @@ server <- function(input, output) {
     return(table_df)
   })
   
-  # table with all data
+  # PAGE 2: output table view
   output$all_table<- DT::renderDataTable({
     # aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
     # DT::datatable(aquarium_df)
@@ -74,20 +76,14 @@ server <- function(input, output) {
     DT::datatable(reactive_df())
   })
   
-  #table only nitrat
-  output$nitrat_table<- DT::renderDataTable({
-    # aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
-    # DT::datatable(aquarium_df)
-    # nitrat_df <- aquarium_df["Nitrat.NO3"]
-    DT::datatable(nitrat_df)
-  })
-  
-  # Plot
+  # PAGE 2: Plot
   output$aquarium_plot <- renderPlot({
     plot(nitrat_df)
   })
   
-  # Content in page 3
+# ------------------------------------------------------------------------------
+  
+  # PAGE 3: Content
   df_products_upload <- reactive({
     inFile <- input$target_upload
     if (is.null(inFile))
