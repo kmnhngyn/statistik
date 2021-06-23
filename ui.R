@@ -60,10 +60,8 @@ daten_sidebar <- sidebarPanel(
     #select_values = colnames(data),
     #choices = colnames(data),
     #selected = "Speed"
-    choices = c( "Alle Werte",
-                 "Nitrat-NO3",
-                 "CO2"),
-    selected = "Nitrat"
+    choices = c( "Alle Werte", "Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
+    selected = ""
   )
 )
 
@@ -98,20 +96,22 @@ konfi_sidebar <- sidebarPanel(
     sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
   ),
   inputPanel(
-    sliderInput("upperBoundary", "Obere Grenze", min = 0, max = 100, step = 1, value = 7)
+    sliderInput("upperBoundary", "Obere Grenze", min = 0, max = 0.99, step = 0.01, value = 0.95)
   ),
   selectInput(
-    "analyticType",
-    label = "Welchen Wert möchtest du gernauer betrachten?",
+    "page3",
+    label = "Welchen Wert möchtest du genauer betrachten?",
     #select_values = colnames(data),
-    choices = c("Temperatur","pH","Nitrat","Phosphat","kH","GH","Fe","CO2"),
+    choices = c("Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
     selected = "Temperatur"
   )
 )
 
 #Page 3 - Anzeigen des Konfidenzintervalls (Mit Selector für welchen Wert dies berechnet werden soll???)
 konfi_main <- fluidPage(
-  plotOutput("konfiIntervall"),
+  h2("Hier werden berechnete Daten ausgegeben."),
+  htmlOutput("konfiParameters"),
+  plotOutput("konfiPlot"),
   
  # plot(1, sapply(2, function(z) erwartete_kosten(z)), xlab = "Anzahl bestellter Ersatzteile", pch=16, col="darkblue", cex=2,
  #      ylab = "Kosten", main = "Gesamtkosten für Lagerung und Nachbestellungen über der Anzahl bestellter Ersatzteile")
