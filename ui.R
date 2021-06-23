@@ -92,9 +92,9 @@ daten_panel <- tabPanel(
 #--------------------------------------------------------------------------------------------------------
 #Page 3 - Slider für das Festlegen der Größe der Konfidenzintervalle
 konfi_sidebar <- sidebarPanel(
-  inputPanel(
-    sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
-  ),
+  # inputPanel(
+  #   sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
+  # ),
   inputPanel(
     sliderInput("upperBoundary", "Obere Grenze", min = 0, max = 0.99, step = 0.01, value = 0.95)
   ),

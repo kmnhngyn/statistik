@@ -117,9 +117,9 @@ server <- function(input, output) {
     str2 <- paste("KonfiStabw: ", getKonfiStabw())
     str3 <- paste("KonfiLength: ", getKonfiLength())
     str4 <- paste("KonfiFreiheitsgrad: ", getKonfiFreiheitsgrad())
-    str5 <- paste("CI Tools: ", calculateCI()[, c("mean")])
-    str6 <- paste("CI Tools: ", calculateCI()[, c("lwr.ci")])
-    str7 <- paste("CI Tools: ", calculateCI()[, c("upr.ci")])
+    str5 <- paste("mean of function MeanCI: ", calculateCI()[, c("mean")])
+    str6 <- paste("Unterer Wert Konfidenzintervall: ", calculateCI()[, c("lwr.ci")])
+    str7 <- paste("Oberer Wert Konfidenzintervall: ", calculateCI()[, c("upr.ci")])
     HTML(paste(str1, str2, str3, str4, str5, str6, str7, sep = '<br/>'))
   })
   
@@ -145,11 +145,11 @@ server <- function(input, output) {
     
     #### TEST
     # für ganzes aquarium
-    aquarium_df_test <- subset(aquarium_df, select = c("Temperatur", "pH", "kH", "CO2"))
-    aqua_mean <- colMeans(aquarium_df_test[sapply(aquarium_df_test, is.numeric)])
-    aquarium_df_max <- aquarium_df_test %>% summarise_if(is.numeric, max, na.rm = TRUE)
-    aquarium_df_min <- aquarium_df_test %>% summarise_if(is.numeric, min, na.rm = TRUE)
-    parameter_names <- colnames(aquarium_df_test)
+    # aquarium_df_test <- subset(aquarium_df, select = c("Temperatur", "pH", "kH", "CO2"))
+    # aqua_mean <- colMeans(aquarium_df_test[sapply(aquarium_df_test, is.numeric)])
+    # aquarium_df_max <- aquarium_df_test %>% summarise_if(is.numeric, max, na.rm = TRUE)
+    # aquarium_df_min <- aquarium_df_test %>% summarise_if(is.numeric, min, na.rm = TRUE)
+    # parameter_names <- colnames(aquarium_df_test)
     # parameter_names <- colnames(aquarium_df[-length(aquarium_df)])
     # parameter_names <- c(parameter_names[-1])
     aqua <- data_frame(parameter=c("Temperatur","pH", "kH", "CO2"), mean=c(25.635,7.20,7.58,12.76), lower=c(24.6,6.5,3,0), upper=c(27,7.6,11,39))
@@ -157,7 +157,7 @@ server <- function(input, output) {
     ggplot() +
       geom_errorbar(data=aqua, mapping=aes(x=parameter, ymin=upper, ymax=lower), width=0.2, size=1, color="blue")
 
-    
+    # TODO: dynamsiches error bar
     ### TEST ENDE
     
       #geom_bar(aes(x=Date, y=), stat="identity", fill="forestgreen", alpha=0.5)
