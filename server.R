@@ -8,6 +8,7 @@
 library(dplyr)
 library(DescTools)
 library(ggplot2)
+library(data.table)
 
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
 # nitrat_df <- subset(aquarium_df, select = c("Nitrat"))
@@ -112,57 +113,61 @@ server <- function(input, output) {
     return(mCI)
   })
   
+  # TEST HARDCODE
+  calculateCI_table <- reactive({
+    mCI_Temp <- MeanCI(aquarium_df$Temperatur, conf.level = input$upperBoundary)
+    mCI_Nitrat <- MeanCI(aquarium_df$Nitrat.NO3, conf.level = input$upperBoundary)
+    mCI_CO2 <- MeanCI(aquarium_df$CO2, conf.level = input$upperBoundary)
+    
+    dt = data.table(
+      Parameter = c("Temperatur", "Nitrat", "CO2"),
+      mean = c(mCI_Temp["mean"],mCI_Nitrat["mean"],mCI_CO2["mean"]),
+      lwr.ci = c(mCI_Temp["lwr.ci"],mCI_Nitrat["lwr.ci"],mCI_CO2["lwr.ci"]),
+      upr.ci = c(mCI_Temp["upr.ci"],mCI_Nitrat["upr.ci"],mCI_CO2["upr.ci"])
+    )
+    return(dt)
+  })
+  
+  # table mit mean, untere grenze und obere grenze berechnen
+  # auf basis von user input
+  # user inout: parameter und vertrauensniveau
+  ci_table_dynamic <- reactive({
+    mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = input$upperBoundary, na.rm = TRUE)
+    
+    ci_dt = data.table(
+      Parameter = c(input$page3),
+      mean = c(mCI["mean"]),
+      lwr.ci = c(mCI["lwr.ci"]),
+      upr.ci = c(mCI["upr.ci"])
+    )
+    return(ci_dt)
+  })
+  
   output$konfiParameters <- renderUI({
-    str1 <- paste("KonfiMW: ", getKonfiMW())
-    str2 <- paste("KonfiStabw: ", getKonfiStabw())
+    str1 <- paste("KonfiMW: ", round(getKonfiMW(),3))
+    str2 <- paste("KonfiStabw: ", round(getKonfiStabw(),3))
     str3 <- paste("KonfiLength: ", getKonfiLength())
     str4 <- paste("KonfiFreiheitsgrad: ", getKonfiFreiheitsgrad())
-    str5 <- paste("mean of function MeanCI: ", calculateCI()[, c("mean")])
-    str6 <- paste("Unterer Wert Konfidenzintervall: ", calculateCI()[, c("lwr.ci")])
-    str7 <- paste("Oberer Wert Konfidenzintervall: ", calculateCI()[, c("upr.ci")])
+    str5 <- paste("mean of function MeanCI: ", round(calculateCI()[, c("mean")],3))
+    str6 <- paste("Unterer Wert Konfidenzintervall: ", round(calculateCI()[, c("lwr.ci")],3))
+    str7 <- paste("Oberer Wert Konfidenzintervall: ", round(calculateCI()[, c("upr.ci")],3))
     HTML(paste(str1, str2, str3, str4, str5, str6, str7, sep = '<br/>'))
   })
   
+  # PLOT: Konfidenzintervall
   output$konfiPlot <- renderPlot({
-    #Berechnung des Konfidenzintervalls - Hilfestellung: https://www.youtube.com/watch?v=1iy1_h5FuT4
-    # warschein <- 1 - (input$upperBoundary- input$lowerBoundary)/100 # Warscheinlichkeit berechnen
-    # t_Quantil <- qt(warschein, konfiFreiheitsgrad)
-    # vertrBereich <- t_Quantil * konfiStabw / sqrt(konfiLength)
-    # vertrBereichUnten <- konfiMW - vertrBereich
-    # vertrBereichOben <- konfiMW + vertrBereich
-    # 
-    # #Visualisieren des Konfidenzintervalls
-    # titleKonfi <- "Darstellung eines Konfidenzintervalls"
-    # error.bars(stats=getKonfiTable()[, c(input$page3)],main="data with confidence intervals")
-    
-    # ggplot(my_sum) +
-    #   geom_bar( aes(x=Species, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
-    #   geom_errorbar( aes(x=Species, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
-    #   ggtitle("using confidence interval")
-    
-    # ggplot(data = getKonfiTable()) +
-    #   geom_bar(aes(x=Date, y=(getKonfiTable()[, c(input$page3)])), stat="identity", fill="forestgreen", alpha=0.5)
-    
     #### TEST
-    # für ganzes aquarium
-    # aquarium_df_test <- subset(aquarium_df, select = c("Temperatur", "pH", "kH", "CO2"))
-    # aqua_mean <- colMeans(aquarium_df_test[sapply(aquarium_df_test, is.numeric)])
-    # aquarium_df_max <- aquarium_df_test %>% summarise_if(is.numeric, max, na.rm = TRUE)
-    # aquarium_df_min <- aquarium_df_test %>% summarise_if(is.numeric, min, na.rm = TRUE)
-    # parameter_names <- colnames(aquarium_df_test)
-    # parameter_names <- colnames(aquarium_df[-length(aquarium_df)])
-    # parameter_names <- c(parameter_names[-1])
-    aqua <- data_frame(parameter=c("Temperatur","pH", "kH", "CO2"), mean=c(25.635,7.20,7.58,12.76), lower=c(24.6,6.5,3,0), upper=c(27,7.6,11,39))
-
-    ggplot() +
-      geom_errorbar(data=aqua, mapping=aes(x=parameter, ymin=upper, ymax=lower), width=0.2, size=1, color="blue")
-
-    # TODO: dynamsiches error bar
+    
+    ggplot(data = ci_table_dynamic()) +
+      geom_bar(aes(x=Parameter, y=mean, fill = Parameter), stat = "identity", fill = "#69b3a2", alpha =0.7) +
+      geom_errorbar(aes(x=Parameter, ymin=lwr.ci, ymax=upr.ci), width = 0.2, color = "red", size =1) +
+      geom_text(aes(x=Parameter, y=lwr.ci, label = round(lwr.ci,3)), size= 3, vjust = 2) +
+      geom_text(aes(x=Parameter, y=upr.ci, label = round(upr.ci,3)), size= 3, vjust = -1) +
+      labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary, " Vertrauensniveau")) +
+      labs(x= "Parameter", y = "Mittelwert des Parameters")
+    
     ### TEST ENDE
     
-      #geom_bar(aes(x=Date, y=), stat="identity", fill="forestgreen", alpha=0.5)
-      
-    # error.bars(stats=getKonfiTable()[, c(input$page3)],main="data with confidence intervals")
   })
   
   # output$konfiIntervall <- renderPlot({

@@ -96,7 +96,7 @@ konfi_sidebar <- sidebarPanel(
   #   sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
   # ),
   inputPanel(
-    sliderInput("upperBoundary", "Obere Grenze", min = 0, max = 0.99, step = 0.01, value = 0.95)
+    sliderInput("upperBoundary", "Vertrauensniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
   ),
   selectInput(
     "page3",
