@@ -14,6 +14,7 @@ library(dplyr)
 library(DescTools)
 library(ggplot2)
 library(data.table)
+library(RColorBrewer)
 
 # Load data
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
@@ -90,6 +91,102 @@ server <- function(input, output) {
     paste(h2("Tabelle für ", input$page2))
     DT::datatable(calculate_table())
   })
+  
+  #
+  # Ausgabe der Daten als Histogramm
+  # Dafür wird ebenfalls das Ergebnis des Dropdownmenüs genutzt.
+  #
+  
+  output$HistPlot <- renderPlot({
+    # Anzeigen aller Werte, nur damit der Plot gerendert werden kann
+    if(input$page2 == "Alle Werte"){
+      g <- ggplot(aquarium_df, aes(x=Date,group = 1)) + 
+        geom_line(aes(y = pH, color="pH")) + 
+        geom_line(aes(y = GH, color="GH")) +
+        geom_line(aes(y = kH, color="kH")) +
+        geom_line(aes(y = Ammoniak, color="Ammoniak")) + 
+        geom_line(aes(y = Nitrit.NO2, color="Nitrit.NO2")) + 
+        geom_line(aes(y = Nitrat.NO3, color="Nitrat.NO3")) + 
+        geom_line(aes(y = Phosphat.PO4, color="Phosphat.PO4")) + 
+        geom_line(aes(y = Fe, color="Fe")) + 
+        geom_line(aes(y = Cu, color="Cu")) +
+        geom_line(aes(y = Cl, color="Cl")) +
+        geom_line(aes(y = CO2, color="CO2")) +
+        geom_line(aes(y = Temperatur, color="Temperatur")) + 
+        labs(x = "Datum", y = "Alle Wasserwerte",colour ='Werte') + 
+        theme(legend.position="bottom")
+        
+    } else {
+      # Anzeigen von spezifischen Werten mit den Korridoren, wo diese liegen sollten
+      x <- calculate_table()
+      g <- ggplot(x, aes(x=Date,y = x[,c(2)],group = 1,color=input$page2)) + 
+        geom_line() + 
+        labs(x = "Datum", y = input$page2,colour = "Wert") +  
+        theme(legend.position="bottom")
+      if(input$page2 == "pH"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=6.5, ymax=8.5), fill="cadetblue1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "GH"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=8, ymax=15), fill="chartreuse", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "kH"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=5, ymax=12), fill="chocolate1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Ammoniak"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0, ymax=0.01), fill="cornflowerblue", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Nitrit.NO2"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0, ymax=0.2), fill="darkgoldenrod1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Nitrat.NO3"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=15, ymax=50), fill="firebrick1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Phosphat.PO4"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0, ymax=0.4), fill="gold1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Fe"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0.05, ymax=0.2), fill="deeppink", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Cu"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0, ymax=0.1), fill="gray50", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Cl"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=0, ymax=0.1), fill="lawngreen", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "CO2"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=15, ymax=35), fill="hotpink1", alpha=0.07,colour = NA)
+      }
+      else if(input$page2 == "Temperatur"){
+        g <- g + geom_ribbon(aes(x=Date, ymin=23, ymax=28), fill="purple1", alpha=0.07,colour = NA)
+      }
+      else{
+        "Fehler"
+      }
+    }
+    plot(g)
+  })
+  
+  # Rendert den CO2-Plot, wenn einer der CO2 relevanten Werte selektiert ist
+  output$Co2PhKh <- renderPlot({
+    if(input$page2 == "pH" || input$page2 == "kH" || input$page2 == "CO2"){
+      g2 <- ggplot(aquarium_df, aes(x=Date,group = 1)) +
+        geom_line(aes(y = pH, color="pH")) +
+        geom_line(aes(y = kH, color="kH")) +
+        geom_line(aes(y = CO2, color="CO2")) +
+        geom_line(aes(y = Temperatur, color="Temperatur")) +
+        labs(x = "Datum", y = "Co2-Relevate Wasserwerte",colour ='Werte') + 
+        theme(legend.position="bottom")
+      plot(g2)
+    }
+  })
+  
+  # Rendert den CO2-Plot, wenn einer der CO2 relevanten Werte selektiert ist
+  output$Co2PhKhText <- renderText({
+    if(input$page2 == "pH" || input$page2 == "kH" || input$page2 == "CO2"){
+      paste("CO2-Wert relevante Werte: ","Der CO2-Wert (Kohlendioxid), KH-Wert (Karbonathärte) und pH-Wert des Wassers stehen in einem festen mathematischen Verhältnis. Bei zwei bekannten Werten kann so der gesuchte fehlende Wert errechnet werden. Da die Messgrößen pH und KH über die Standard-Messverfahren (Tropfentest) leicht ermittelbar sind, eine CO2-Messung jedoch nur im Labor möglich ist, wird im Normalfall bei bekanntem KH- und pH-Wert der vorliegende CO2-Wert errechnet. Die zugrundeliegende Formel berücksichtigt nicht alle als Säuren vorliegenden Salze und ist daher nur als Näherungswert zu sehen. Das Ergebnis ist jedoch in der aquaristischen Praxis als ausreichend genau anzusehen. Bei sehr kleinen KH-Werten (Umkehrosmosewasser) sind jedoch die verfügbaren Messverfahren zu ungenau um eine vernünftige Aussage zu treffen. ", br())
+    }
+  })
+
   
   ########### PAGE 3 ###########
   
@@ -178,5 +275,13 @@ server <- function(input, output) {
       geom_text(aes(x=Parameter, y=upr.ci, label = round(upr.ci,3)), size= 3, vjust = -1) +
       labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary*100, "% Vertrauensniveau")) +
       labs(x= "Parameter", y = "Mittelwert des Parameters")
+  })
+
+  #
+  #PLOT: Histogramm der Werte
+  #Inkl. einzeichnen der Boundarys
+  #
+  output$konfiHisto <- renderPlot({
+    ggplot(getKonfiTable()[, c(input$page3)], aes(x=weight)) + geom_histogram()
   })
 }
