@@ -55,7 +55,9 @@ page1_panel <- tabPanel(
   pre (a(href = "https://github.com/kmnhngyn/statistik", "Eigene GitHub Repo"),
        a(href = "http://nguyenkim.shinyapps.io/statistik_hausarbeit/", "Deployment auf shinyapps.io"),
        "Wasserwerte - Eigener Datensatz",
-       a(href = "https://www.garnelio.de/blog/wasserchemie/die-wichtigsten-wasserwerte-im-aquarium", "Erläuterung der Wasserwerte")
+       a(href = "https://www.garnelio.de/blog/wasserchemie/die-wichtigsten-wasserwerte-im-aquarium", "Erläuterung der Wasserwerte"),
+       a(href = "https://www.aquaristik-hilfe.de/calc01.htm", "Erläuterung des CO2-Wertes")
+       
       )
 )
 
@@ -85,7 +87,9 @@ page2_main <- fluidPage(
   DT::dataTableOutput("table"),
   br(),
   h3("Hier werden berechnete Daten visualisert."),
-  plotOutput(outputId = "HistPlot")
+  plotOutput(outputId = "HistPlot"), br(),
+  textOutput(outputId = "Co2PhKhText"),br(),
+  plotOutput(outputId = "Co2PhKh")
 )
 
 page2_panel <- tabPanel(
