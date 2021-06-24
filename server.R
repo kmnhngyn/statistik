@@ -14,6 +14,7 @@ library(dplyr)
 library(DescTools)
 library(ggplot2)
 library(data.table)
+library(RColorBrewer)
 
 # Load data
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
@@ -90,6 +91,42 @@ server <- function(input, output) {
     paste(h2("Tabelle für ", input$page2))
     DT::datatable(calculate_table())
   })
+  
+  #
+  # Ausgabe der Daten als Histogramm
+  # Dafür wird ebenfalls das Ergebnis des Dropdownmenüs genutzt.
+  #
+  
+  output$HistPlot <- renderPlot({
+    # Anzeigen aller Werte, nur damit der Plot gerendert werden kann
+    if(input$page2 == "Alle Werte"){
+      g <- ggplot(aquarium_df, aes(x=Date,group = 1)) + 
+        geom_line(aes(y = pH, color="pH")) + 
+        geom_line(aes(y = GH, color="GH")) +
+        geom_line(aes(y = kH, color="kH")) +
+        geom_line(aes(y = Ammoniak, color="Ammoniak")) + 
+        geom_line(aes(y = Nitrit.NO2, color="Nitrit.NO2")) + 
+        geom_line(aes(y = Nitrat.NO3, color="Nitrat.NO3")) + 
+        geom_line(aes(y = Phosphat.PO4, color="Phosphat.PO4")) + 
+        geom_line(aes(y = Fe, color="Fe")) + 
+        geom_line(aes(y = Cu, color="Cu")) +
+        geom_line(aes(y = Cl, color="Cl")) +
+        geom_line(aes(y = CO2, color="CO2")) +
+        geom_line(aes(y = Temperatur, color="Temperatur in C")) + 
+        labs(x = "Datum", y = "Alle Wasserwerte") + 
+        theme(legend.position="bottom")
+        
+    } else {
+      # Anzeigen von spezifischen Werten
+      x <- calculate_table()
+      g <- ggplot(x, aes(x=Date,y = x[,c(2)],group = 1,color=input$page2)) + 
+        geom_line() + 
+        labs(x = "Datum", y = input$page2) +  
+        theme(legend.position="bottom")
+    }
+    plot(g)
+  })
+  
   
   ########### PAGE 3 ###########
   
