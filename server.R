@@ -1,80 +1,97 @@
-# Define server logic required to draw a histogram
 #
-# The Server controls the data that will be displayed through the UI.
-# The server will be where you load in and wrangle data,
-# then define your outputs (i.e. plots) using input from the UI.
+# Projekt: statistik Hausarbeit mit Aquariumdaten
+# Nguyen, Kim Anh 563958
+# Melchert, Niklas 
+#
+# Hier entsteht die Logik. 
+# Für jede Page, die in ui.R definiert ist,
+# wird hier Logik, Funktionen definiert.
+# output funktionen dienen der Ausgabe im ui.
+# 
 
-# Load libraries, data
+# Load libraries
 library(dplyr)
 library(DescTools)
 library(ggplot2)
 library(data.table)
 
+# Load data
 aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
-# nitrat_df <- subset(aquarium_df, select = c("Nitrat"))
-# co2_df <- aquarium_df["CO2"]
-# nitrat_c02 <- aquarium_df[, c("Nitrat","CO2")]
 
-# Create server
+#
+# Server erstellen.
+# Hier drin wird alles definiert
+#
 server <- function(input, output) {
+  ########### PAGE 2 ###########
   
-  # Side panel in page 2
-  output$selected_var <- renderText({
-    paste("Deine Auswahl ist ", input$var)
+  #
+  # Ausgabe von Text, welche Auswahl der user getroffen hat.
+  # input$page2 ist die Auswahl des users
+  # für die Tabellenausgabe
+  #
+  output$selected_page2 <- renderText({
+    paste("Deine Auswahl ist ", input$page2)
   })
   
-#--------------------------------------------------------------------------------------------------------  
-# Main content in page 2
-  
+  # 
+  # Berechnung und Ausgabe von Mittelwert
+  # basierend auf Auswahl von user
+  # wenn der user 'Alle Werte' auswählt,
+  # dann wird kein mittelwert berechnet.
+  # 
   output$mittelwert <- renderText({
-    if(input$var == "Alle Werte"){
+    if(input$page2 == "Alle Werte"){
       paste ("")
     } else {
-      mean <- mean(aquarium_df[, c(input$var)], na.rm = TRUE)
-      paste("Der Mittelwert von ", input$var, " beträgt: ", mean)
+      # mean() - Mittelwert, NA werden gedropped
+      mean <- mean(aquarium_df[, c(input$page2)], na.rm = TRUE)
+      paste("Der Mittelwert von ", input$page2, " beträgt: ", round(mean,3))
     }
   })
   
+  # 
+  # Berechnung und Ausgabe von Standardabweichung
+  # basierend auf Auswahl von user
+  # wenn der user 'Alle Werte' auswählt,
+  # dann wird keine standardabweichung berechnet.
+  #
   output$standardabweichung <- renderText({
-    if(input$var == "Alle Werte"){
+    if(input$page2 == "Alle Werte"){
       paste("")
     } else{
-      sd <- sd(aquarium_df[, c(input$var)], na.rm=TRUE)
-      paste("Die Standardabweichung von ", input$var, " beträgt: ", sd)
+      # sd() - Standardabweichung, NA werden gedropped
+      sd <- sd(aquarium_df[, c(input$page2)], na.rm=TRUE)
+      paste("Die Standardabweichung von ", input$page2, " beträgt: ", round(sd,3))
     }
   })
   
-  # dynamic output table
-  reactive_df <- reactive({
-    if(input$var == "Alle Werte"){
+  # 
+  # Funktionen zum Erstellen der Tabelle
+  # basierend auf Auswahl von user.
+  # wenn 'Alle Werte', dann die ganze Tabelle
+  # ansonsten entsprechender Parameter
+  #
+  calculate_table <- reactive({
+    if(input$page2 == "Alle Werte"){
       table_df <- aquarium_df
     } else {
-      table_df <- subset(aquarium_df, select = c("Date",input$var))
+      table_df <- subset(aquarium_df, select = c("Date",input$page2))
     }
     return (table_df)
   })
   
-  # table with all data
-  output$all_table<- DT::renderDataTable({
-    # aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
-    # DT::datatable(aquarium_df)
-    # nitrat_df <- aquarium_df["Nitrat"]
-    paste(h2("Tabelle"))
-    DT::datatable(reactive_df())
+  #
+  # Ausgabe der Tabelle
+  # basierend auf Funktion 
+  # calculate_table()
+  #
+  output$table<- DT::renderDataTable({
+    paste(h2("Tabelle für ", input$page2))
+    DT::datatable(calculate_table())
   })
   
-  # Plot
-  output$aquarium_plot <- renderPlot({
-    plot(nitrat_df)
-  })
-  
-  #--------------------------------------------------------------------------------------------------------
-  # Content in page 3
-  
-  # 
-  # Folgende Funktionen dienen
-  # um Konfidenz parameter zu berechnen
-  # 
+  ########### PAGE 3 ###########
   
   # Tabelle erstellen mit den ausgewählten werten
   # na.omit löscht alle Zeilen mit NA
@@ -83,54 +100,47 @@ server <- function(input, output) {
     return (na.omit(konfiTable))
   })
   
-  getKonfiMW <- reactive({
-    konfiMW <- mean(getKonfiTable()[, c(input$page3)])
-    return(konfiMW)
-  })
+  # getKonfiMW <- reactive({
+  #   konfiMW <- mean(getKonfiTable()[, c(input$page3)])
+  #   return(konfiMW)
+  # })
   
   getKonfiStabw <- reactive({
     konfiStabw <- sd(getKonfiTable()[, c(input$page3)])
     return(konfiStabw)
   })
   
-  getKonfiLength <- reactive({
-    # konfiLength <- length(getKonfiTable())
-    konfiLength <- nrow(getKonfiTable())
-    return(konfiLength)
-  })
+  # getKonfiLength <- reactive({
+  #   # konfiLength <- length(getKonfiTable())
+  #   konfiLength <- nrow(getKonfiTable())
+  #   return(konfiLength)
+  # })
   
-  getKonfiFreiheitsgrad <- reactive({
-    konfiFreiheitsgrad <- getKonfiLength() - 1
-    return(konfiFreiheitsgrad)
-  })
+  # getKonfiFreiheitsgrad <- reactive({
+  #   konfiFreiheitsgrad <- getKonfiLength() - 1
+  #   return(konfiFreiheitsgrad)
+  # })
   
   # erläuerung von MeanCI Konfidenzintervall für
   # mittelwerte: http://www.mathcs.emory.edu/~fox/NewCCS/ModuleV/ModVP9.html
   # 
+  
+  #
+  # Für Konfidenzintervalle die Funktion MeanCI.
+  # MeanCI gibt uns Mittelwert und obere und untere Grenze
+  # basierend auf dem Konfidenzniveau
+  # das niveau basiert auf auswahl von user
+  #
   calculateCI <- reactive({
     mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = input$upperBoundary)
     mCI <- as.data.frame(t(mCI))
     return(mCI)
   })
   
-  # TEST HARDCODE
-  calculateCI_table <- reactive({
-    mCI_Temp <- MeanCI(aquarium_df$Temperatur, conf.level = input$upperBoundary)
-    mCI_Nitrat <- MeanCI(aquarium_df$Nitrat.NO3, conf.level = input$upperBoundary)
-    mCI_CO2 <- MeanCI(aquarium_df$CO2, conf.level = input$upperBoundary)
-    
-    dt = data.table(
-      Parameter = c("Temperatur", "Nitrat", "CO2"),
-      mean = c(mCI_Temp["mean"],mCI_Nitrat["mean"],mCI_CO2["mean"]),
-      lwr.ci = c(mCI_Temp["lwr.ci"],mCI_Nitrat["lwr.ci"],mCI_CO2["lwr.ci"]),
-      upr.ci = c(mCI_Temp["upr.ci"],mCI_Nitrat["upr.ci"],mCI_CO2["upr.ci"])
-    )
-    return(dt)
-  })
-  
-  # table mit mean, untere grenze und obere grenze berechnen
-  # auf basis von user input
-  # user inout: parameter und vertrauensniveau
+  #
+  # Tabelle erstellen mit den berechneten Werten
+  # aus Funktion calculateCI(), um später auf die Werte zugreifen zu können
+  #
   ci_table_dynamic <- reactive({
     mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = input$upperBoundary, na.rm = TRUE)
     
@@ -143,60 +153,30 @@ server <- function(input, output) {
     return(ci_dt)
   })
   
+  #
+  # berechnete Werte erstmal als text/info ausgeben
+  #
   output$konfiParameters <- renderUI({
-    str1 <- paste("KonfiMW: ", round(getKonfiMW(),3))
-    str2 <- paste("KonfiStabw: ", round(getKonfiStabw(),3))
-    str3 <- paste("KonfiLength: ", getKonfiLength())
-    str4 <- paste("KonfiFreiheitsgrad: ", getKonfiFreiheitsgrad())
-    str5 <- paste("mean of function MeanCI: ", round(calculateCI()[, c("mean")],3))
-    str6 <- paste("Unterer Wert Konfidenzintervall: ", round(calculateCI()[, c("lwr.ci")],3))
-    str7 <- paste("Oberer Wert Konfidenzintervall: ", round(calculateCI()[, c("upr.ci")],3))
-    HTML(paste(str1, str2, str3, str4, str5, str6, str7, sep = '<br/>'))
+    str1 <- paste("Standardabweichung für ", input$page3, ": ", round(getKonfiStabw(),3))
+    str2 <- paste("Mittelwert für ", input$page3, ": ", round(calculateCI()[, c("mean")],3))
+    str3 <- paste("Unterer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("lwr.ci")],3))
+    str4 <- paste("Oberer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("upr.ci")],3))
+    HTML(paste(str1, str2, str3, str4, sep = '<br/>'))
   })
   
+  # 
   # PLOT: Konfidenzintervall
+  # Hier wird das Konfidenzintervall geplottet
+  # 
   output$konfiPlot <- renderPlot({
     #### TEST
-    
+    # https://rpubs.com/techanswers88/MeanAndConfidenceIntervals
     ggplot(data = ci_table_dynamic()) +
       geom_bar(aes(x=Parameter, y=mean, fill = Parameter), stat = "identity", fill = "#69b3a2", alpha =0.7) +
       geom_errorbar(aes(x=Parameter, ymin=lwr.ci, ymax=upr.ci), width = 0.2, color = "red", size =1) +
       geom_text(aes(x=Parameter, y=lwr.ci, label = round(lwr.ci,3)), size= 3, vjust = 2) +
       geom_text(aes(x=Parameter, y=upr.ci, label = round(upr.ci,3)), size= 3, vjust = -1) +
-      labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary, " Vertrauensniveau")) +
+      labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary*100, "% Vertrauensniveau")) +
       labs(x= "Parameter", y = "Mittelwert des Parameters")
-    
-    ### TEST ENDE
-    
   })
-  
-  # output$konfiIntervall <- renderPlot({
-  #   #Berechnung des Konfidenzintervalls - Hilfestellung: https://www.youtube.com/watch?v=1iy1_h5FuT4
-  #   warschein <- 1 - (input$upperBoundary- input$lowerBoundary)/100 # Warscheinlichkeit berechnen
-  #   t_Quantil <- qt(warschein, konfiFreiheitsgrad)
-  #   vertrBereich <- t_Quantil * konfiStabw / sqrt(konfiLength)
-  #   vertrBereichUnten <- konfiMW - vertrBereich
-  #   vertrBereichOben <- konfiMW + vertrBereich
-  # 
-  #   #Visualisieren des Konfidenzintervalls
-  #   titleKonfi <- "Darstellung eines Konfidenzintervalls"
-  # 
-  #   #plot(konfiTable)
-  # })
-  
-  #--------------------------------------------------------------------------------------------------------
-  # Content in page 4
-  df_products_upload <- reactive({
-    inFile <- input$target_upload
-    if (is.null(inFile))
-      return(NULL)
-    df <- read.csv(inFile$datapath, header = TRUE,sep = input$separator)
-    return(df)
-  })
-
-  output$sample_table<- DT::renderDataTable({
-    df <- df_products_upload()
-    DT::datatable(df)
-  })
-  
 }

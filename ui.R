@@ -1,10 +1,19 @@
-# Define UI for application that draws a histogram
+#
+# Projekt: statistik Hausarbeit mit Aquariumdaten
+# Nguyen, Kim Anh 563958
+# Melchert, Niklas 
+#
+# Hier entsteht das user interface. 
+# Dieses ist eingeteilt in 3 panels/tabs/pages
+# Page 1: Intro: Aufgabenstellung und Zusammenfassung der App
+# Page 2: Daten visualisierung (nur Tabelle) als Überblick
+# Page 3: Konfidenzintervall - dynamische Anzeige durch User input
+# 
 
-# Load libraries, data
-#characters <- read.csv(url("https://github.com/yhejazi/tutorials/blob/main/rshiny/data/characters.csv"))
-
-# Page 1 - Introduction "Intro"
-intro_panel <- tabPanel(
+#
+# PAGE 1 - Introduction "Intro"
+#
+page1_panel <- tabPanel(
   "Intro",
   
   titlePanel("Intro"),
@@ -44,18 +53,19 @@ intro_panel <- tabPanel(
   
   h2("Quellen"),
   pre (a(href = "https://github.com/kmnhngyn/statistik", "Eigene GitHub Repo"),
-       a(href = "https://riptutorial.com/shiny/example/32449/uploading-csv-files-to-shiny", "CSV laden und darstellen (Page 3)"),
-       a(href = "https://www.youtube.com/watch?v=1iy1_h5FuT4", "Berechnung von Konfidenzintervallen")
+       a(href = "http://nguyenkim.shinyapps.io/statistik_hausarbeit/", "Deployment auf shinyapps.io")
       )
 )
 
-# ------------------------------------------------------------------------------
+################################################################################
 
-# Page 2 - Vizualization "Daten"
-daten_sidebar <- sidebarPanel(
+#
+# PAGE 2 - Vizualization Tabelle "Datentabelle"
+#
+page2_sidebar <- sidebarPanel(
   selectInput(
     # select widget var
-    "var",
+    "page2",
     label = "Was möchtest du anzeigen lassen?",
     #select_values = colnames(data),
     #choices = colnames(data),
@@ -65,36 +75,29 @@ daten_sidebar <- sidebarPanel(
   )
 )
 
-daten_main <- fluidPage(
-  #plotOutput("plot")
-  # textOutput("selected_var"),
-  # h2("Tabellenausgabe"),
-  DT::dataTableOutput("all_table"),
-  br(),
+page2_main <- fluidPage(
+  textOutput("selected_page2"),
   h2("Hier werden berechnete Daten ausgegeben."),
   textOutput("mittelwert"),
   textOutput("standardabweichung"),
-  textOutput("untergrenze"),
-  textOutput("obergrenze"),
-  # TODO: diese ansicht dynamisch machen
-  # h3("Tabelle für Nitrat"),
-  # DT::dataTableOutput("nitrat_table")
-  # plotOutput("aquarium_plot")
+  DT::dataTableOutput("table")
+  # br(),
 )
 
-daten_panel <- tabPanel(
-  "Daten",
-  titlePanel("Daten"),
+page2_panel <- tabPanel(
+  "Datentabelle",
+  titlePanel("Datentabelle"),
   sidebarLayout(
-    daten_sidebar, daten_main
+    page2_sidebar, page2_main
   )
 )
-#--------------------------------------------------------------------------------------------------------
-#Page 3 - Slider für das Festlegen der Größe der Konfidenzintervalle
-konfi_sidebar <- sidebarPanel(
-  # inputPanel(
-  #   sliderInput("lowerBoundary", "Untere Grenze", min = 0, max = 100, step = 1, value = 7)
-  # ),
+
+################################################################################
+
+#
+# PAGE 3 - "Konfidenzintervalle" 
+#
+page3_sidebar <- sidebarPanel(
   inputPanel(
     sliderInput("upperBoundary", "Vertrauensniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
   ),
@@ -107,49 +110,26 @@ konfi_sidebar <- sidebarPanel(
   )
 )
 
-#Page 3 - Anzeigen des Konfidenzintervalls (Mit Selector für welchen Wert dies berechnet werden soll???)
-konfi_main <- fluidPage(
+page3_main <- fluidPage(
   h2("Hier werden berechnete Daten ausgegeben."),
   htmlOutput("konfiParameters"),
   plotOutput("konfiPlot"),
-  
- # plot(1, sapply(2, function(z) erwartete_kosten(z)), xlab = "Anzahl bestellter Ersatzteile", pch=16, col="darkblue", cex=2,
- #      ylab = "Kosten", main = "Gesamtkosten für Lagerung und Nachbestellungen über der Anzahl bestellter Ersatzteile")
  
 )
 
-# Page 3 - Visualisierung Konfidenzintervalle
-konfi_panel <- tabPanel("Konfidenzintervalle",
+page3_panel <- tabPanel("Konfidenzintervalle",
   titlePanel("Konfidenzintervalle"),
   sidebarLayout(
-    konfi_sidebar, konfi_main
+    page3_sidebar, page3_main
   )
 )
 
-#--------------------------------------------------------------------------------------------------------
-# Page 4 - Vizualization "CSV"
-csv_panel <- tabPanel(
-  "CSV-Umwandlung",
-  titlePanel("CSV-Umwandlung"),
-  fluidPage(
-    fileInput('target_upload', 'Choose file to upload',
-              accept = c(
-                'text/csv',
-                'text/comma-separated-values',
-                '.csv'
-              )
-    ),
-    radioButtons("separator","Please select separator: ",choices = c(";",",",":"), selected=";",inline=TRUE),
-    DT::dataTableOutput("sample_table")
-  )
-)
+################################################################################
 
-#--------------------------------------------------------------------------------------------------------------
-# Navigation - show all tabs
+# Navigation - alle pages sichtbar machen
 ui <- navbarPage(
   "Statistik Hausarbeit",
-  intro_panel,
-  daten_panel,
-  konfi_panel,
-  csv_panel
+  page1_panel,
+  page2_panel,
+  page3_panel
 )
