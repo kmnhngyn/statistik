@@ -15,10 +15,7 @@
 #
 page1_panel <- tabPanel(
   "Intro",
-  
   titlePanel("Intro"),
-  
-  #  img(src = "img source"),
   h2("Aufgabe der Hausarbeit"),
   p(
   "Aufgabe der Hausarbeit ist, eine interaktive Visualisierung mit Shiny in R zu bauen, welche ein statistisches Konzept aus der Vorlesung demonstriert.",br(),
