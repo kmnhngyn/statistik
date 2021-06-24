@@ -115,7 +115,7 @@ server <- function(input, output) {
         geom_line(aes(y = Temperatur, color="Temperatur")) + 
         labs(x = "Datum", y = "Alle Wasserwerte",colour ='Werte') + 
         theme(legend.position="bottom")
-        
+      
     } else {
       # Anzeigen von spezifischen Werten mit den Korridoren, wo diese liegen sollten
       x <- calculate_table()
@@ -186,7 +186,7 @@ server <- function(input, output) {
       paste("CO2-Wert relevante Werte: ","Der CO2-Wert (Kohlendioxid), KH-Wert (Karbonathärte) und pH-Wert des Wassers stehen in einem festen mathematischen Verhältnis. Bei zwei bekannten Werten kann so der gesuchte fehlende Wert errechnet werden. Da die Messgrößen pH und KH über die Standard-Messverfahren (Tropfentest) leicht ermittelbar sind, eine CO2-Messung jedoch nur im Labor möglich ist, wird im Normalfall bei bekanntem KH- und pH-Wert der vorliegende CO2-Wert errechnet. Die zugrundeliegende Formel berücksichtigt nicht alle als Säuren vorliegenden Salze und ist daher nur als Näherungswert zu sehen. Das Ergebnis ist jedoch in der aquaristischen Praxis als ausreichend genau anzusehen. Bei sehr kleinen KH-Werten (Umkehrosmosewasser) sind jedoch die verfügbaren Messverfahren zu ungenau um eine vernünftige Aussage zu treffen. ", br())
     }
   })
-
+  
   
   ########### PAGE 3 ###########
   
@@ -276,7 +276,7 @@ server <- function(input, output) {
       labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary*100, "% Vertrauensniveau")) +
       labs(x= "Parameter", y = "Mittelwert des Parameters")
   })
-
+  
   #
   #PLOT: Histogramm der Werte
   #Inkl. einzeichnen der Boundarys
