@@ -1,3 +1,12 @@
+#
+# Projekt: statistik Hausarbeit mit Aquariumdaten
+# Nguyen, Kim Anh 563958
+# Melchert, Niklas 
+#
+# Zusammenführung von Logik ui.R
+# und dem interface app.R.
+# 
+
 ---
 output: html_document
 runtime: shiny
