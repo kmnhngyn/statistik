@@ -40,7 +40,7 @@ page1_panel <- tabPanel(
     h4("Kupferwert (Cu):"),"Kupfer (Cu) ist für Fische zwar auch giftig, jedoch ist das Schwermetall für Garnelen noch deutlich toxischer.",br(),  
     h4("Phosphatwert (PO4):"),"Ein zu hoher Phosphatwert (PO4) im Aquarium steht im Verdacht, für Häutungsprobleme oder Missbildungen bei Garnelen und für mangelnde Zuchterfolge generell bei Krebstieren verantwortlich zu sein. Des weiteren kann ein zu hoher Phosphatgehalt im Aquarium die Ursache für Algenplagen sein.",br(),  
     h4("Eisenwert (Fe):"),"Eisen (Fe) brauchen die Aquarienpflanzen zur Ausbildung des Blattgrüns. Ohne Eisen keine Photosynthese und damit keine Energiegewinnung. Eisenmangel lässt zuerst die jungen Blätter und die Triebspitzen gelblich-blass wirken, während die Blattadern grün bleiben - die Pflanze entwickelt eine sogenannte Chlorose. Eisen gehört zu den Mikronährstoffen, die Pflanzen brauchen also nicht sehr viel davon. Ein zu hoher Eisenwert im Aquarium kann die Bildung von Rotalgen (Pinselalgen, Bartalgen, Froschlaichalgen und Co.) fördern.",br(),
-  ),  br(),
+  ), br(),
   
   h4("Abgabe in Ihrer Gruppe:"),
   p("Quellcode der Shiny-App in Moodle hochladen.", br(),h4("Abgabetermin ist der 28.06.2021 um 23:59."),
@@ -80,8 +80,8 @@ page2_sidebar <- sidebarPanel(
 )
 
 page2_main <- fluidPage(
-  textOutput("selected_page2"),
-  h2("Hier werden berechnete Daten ausgegeben."),
+  # textOutput("selected_page2"),
+  h3("Hier werden berechnete Daten ausgegeben."),
   textOutput("mittelwert"),
   textOutput("standardabweichung"),
   DT::dataTableOutput("table"),
@@ -106,23 +106,33 @@ page2_panel <- tabPanel(
 # PAGE 3 - "Konfidenzintervalle" 
 #
 page3_sidebar <- sidebarPanel(
-  inputPanel(
-    sliderInput("upperBoundary", "Vertrauensniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
-  ),
   selectInput(
     "page3",
     label = "Welchen Wert möchtest du genauer betrachten?",
     #select_values = colnames(data),
     choices = c("Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
     selected = "Temperatur"
+  ),
+  inputPanel(
+    sliderInput("upperBoundary", "Vertrauensniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
   )
 )
 
-page3_main <- fluidPage(
-  h2("Hier werden berechnete Daten ausgegeben."),
+page3_main <- mainPanel(
+  h3("Was machen Konfidenzintervalle?"),
+  p(
+    "Bei einem Konfidenzintervall (auch bekannt unter Intervallschätzung), handelt es sich um ein Verfahren, einen Bereich zu bestimmen,", br(),
+    "in dem ein Paramter mit einer bestimmten Wahrscheinlichkeit (von z.b. 95% liegt.", br(),
+    "Diese Wahrscheinlichkeit wird auch Konfidenzniveau genannt.", br(),
+    "Wenn wir bspw. den durchschnittlichen Wert an CO2 im Aquarium schätzen möchten, würden wir bei einer Punktschätzung einen Wert von 12.758", br(),
+    "aus unserem Datensatz erhalten. Bei der Intervallschätzung geben wir einen Bereich an und", br(),
+    "machen eine Aussage dass der Mittelwert mit einer Wahrscheinlichkeit von 95% zwischen 6.881 und 18.636 liegt."
+  ),
+  br(),
+  h3("Hier werden berechnete Daten ausgegeben."),
   htmlOutput("konfiParameters"),
-  plotOutput("konfiPlot"),
- 
+  br(),br(),
+  plotOutput("konfiPlot")
 )
 
 page3_panel <- tabPanel("Konfidenzintervalle",

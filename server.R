@@ -31,9 +31,9 @@ server <- function(input, output) {
   # input$page2 ist die Auswahl des users
   # für die Tabellenausgabe
   #
-  output$selected_page2 <- renderText({
-    paste("Deine Auswahl ist ", input$page2)
-  })
+  # output$selected_page2 <- renderText({
+  #   paste("Deine Auswahl ist ", input$page2)
+  # })
   
   # 
   # Berechnung und Ausgabe von Mittelwert
