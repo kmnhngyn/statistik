@@ -1,7 +1,7 @@
 #
 # Projekt: statistik Hausarbeit mit Aquariumdaten
 # Nguyen, Kim Anh 563958
-# Melchert, Niklas 
+# Melchert, Niklas 560671
 #
 # Hier entsteht die Logik. 
 # Für jede Page, die in ui.R definiert ist,
@@ -21,7 +21,7 @@ aquarium_df <- read.csv(file = 'data/aquarium.csv', header = TRUE, sep = ",")
 
 #
 # Server erstellen.
-# Hier drin wird alles definiert
+# Hier drin wird die Logik definiert
 #
 server <- function(input, output) {
   ########### PAGE 2 ###########

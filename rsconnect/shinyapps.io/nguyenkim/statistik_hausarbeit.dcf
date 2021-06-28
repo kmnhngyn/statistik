@@ -5,10 +5,10 @@ account: nguyenkim
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4311620
-bundleId: 4748721
+bundleId: 4764450
 url: https://nguyenkim.shinyapps.io/statistik_hausarbeit/
-when: 1624472784.32284
-lastSyncTime: 1624472784.32286
+when: 1624885626.26126
+lastSyncTime: 1624885626.26128
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: data/aquarium_OLD.csv|data/aquarium_OLD2.csv

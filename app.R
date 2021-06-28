@@ -1,7 +1,7 @@
 #
 # Projekt: statistik Hausarbeit mit Aquariumdaten
 # Nguyen, Kim Anh 563958
-# Melchert, Niklas 
+# Melchert, Niklas 560671
 #
 # Zusammenführung von Logik ui.R
 # und dem interface app.R.

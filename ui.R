@@ -1,7 +1,7 @@
 #
 # Projekt: statistik Hausarbeit mit Aquariumdaten
 # Nguyen, Kim Anh 563958
-# Melchert, Niklas 
+# Melchert, Niklas 560671
 #
 # Hier entsteht das user interface. 
 # Dieses ist eingeteilt in 3 panels/tabs/pages
@@ -17,19 +17,19 @@ page1_panel <- tabPanel(
   "Intro",
   
   titlePanel("Intro"),
-  img(src = "Aquarium_Foto.PNG"),br(),
-  h2("Aufgabe der Hausarbeit"),
+  img(src = 'Aquarium_Foto.jpg'),br(),
+  h2("Inhalt der Hausarbeit"),
   p(
-    "Bei dieser Hausarbeit haben wir uns für das visualiseren von Konfidenzintervallen entschieden.",br(),
-    "Dafür haben wir in R/ shiny diese App umgesetzt, welche die Daten durch den Nutzer steuerbar anzeigen kann.",br(),
-    "Um die Möglichkeiten aufzuzeigen, haben wir verschiedene 'Reiter' implementiert, in welchen die verschiednen Funktionen präsentiert werden.",br(),
-    h3("Funktionen:"),br(),
-    " - Seite 1: Ist diese Intro Seite, mit den Erläuterungen, wie die App funktioniert.",br(),
-    " - Seite 2: Stellt die Daten in einer Tabelle da und ermöglicht eine Darstellung, welche die einzelnen Werte selektierbar macht und nur für diese dann eine Anzeige erstellt.",br(),
-    " - Seite 3: Auf dieser Seite wurden die Konfidenzintervalle dargestellt, die Darstellung bzw. das Konfidenzintervall lässt sich durch einen Slider beeinflussen und stellt dies dann entsprechend visualisiert dar.",br(),
-    "   Dafür wird ein Graph erzuegt, welcher die Datenwerte anzeigt, so wie die Sicherheit/ das Konfidenzintervall.", br(),br(),
-    h3("Daten/ Erläuterung:"),br(),
-    "Als Datenquelle wurden echte Werte eines Aquariums genutzt, diese enthalten die Wasserwerte, welche über einen Zeitraum von 4 Monaten zum eil automatisch ermittelt wurden.",br(),
+    "Diese Hausarbeit wurde von Nguyen, Kim Anh (563958) und Melchert, Niklas (560671) erstellt.", br(),
+    "Wir haben uns für das Visualisieren von Konfidenzintervallen entschieden.",br(),
+    "Dafür haben wir in R/Shiny diese App umgesetzt, welche die Daten durch den Nutzer steuerbar anzeigen kann.",br(),
+    "Um die Möglichkeiten aufzuzeigen, haben wir verschiedene Reiter implementiert, in welchen die verschiedenen Funktionen präsentiert werden.",br(),
+    h3("Aufbau:"),
+    " - Seite 1 'Intro': Ist diese Intro Seite, mit den Erläuterungen, wie die App funktioniert.",br(),
+    " - Seite 2 'Datentabelle': Stellt die Daten in einer Tabelle da und ermöglicht eine Darstellung, welche die einzelnen Werte selektierbar macht und nur für diese dann eine Anzeige erstellt.",br(),
+    " - Seite 3 'Konfidenzintervalle': Auf dieser Seite werden die Konfidenzintervalle dargestellt. Die Darstellung bzw. das Konfidenzintervall lässt sich durch einen Slider für das Konfidenzniveau beeinflussen und stellt dies dann entsprechend visualisiert dar.", br(),
+    h3("Daten/ Erläuterung:"),
+    "Als Datenquelle wurden echte Werte eines Aquariums genutzt, diese enthalten die Wasserwerte, welche über einen Zeitraum von 4 Monaten zum Teil automatisch ermittelt wurden.",br(),
     h4("Gesamthärte (GH)"),"Die Gesamthärte setzt sich aus allen Erdalkali-Ionen zusammen, die im Wasser gelöst sind. Die wichtigsten Härtebildner im Aquarium sind Kalzium (Ca) und Magnesium (Mg). Strontium und Barium spielen im Süßwasser nur eine sehr untergeordnete Rolle.Der Bereich von 0-7 °dGH gilt als weich, 7-14 als mittelhart und alles über 14 Grad deutscher Gesamthärte gilt als hartes Wasser.",br(),
     h4("Karbonathärte (KH):"),"Die Karbonathärte (KH) misst den Anteil der an Karbonate und Hydrogenkarbonate gebundenen Erdalkali-Ionen - damit ist sie eigentlich Teil der Gesamthärte. Die in der Aquaristik gängigen Tests messen jedoch nicht die 'echte' Karbonathärte, sondern lediglich das Säurebindungsvermögen, Dieser Test ist gröber und schließt alle Karbonate und Hydrogenkarbonate ein, auch die, die an Nicht-Erdalkali-Metalle gebunden sind (wie zum Beispiel an Natrium).",br(),
     h4("pH-Wert (pH):") ,"Der pH-Wert beschreibt, ob das Wasser im Aquarium sauer, neutral oder basisch ist. Jede Stufe der Skala erhöht sich um den Faktor 10 - ein pH von 6 ist zehnmal so sauer wie ein pH von 7. Bei einem pH-Wert von 0 bis 7 spricht man von saurem Wasser. Der Bereich um 7,5 ist neutral, und alles über 7,5 ist basisch.",br(),
@@ -40,10 +40,12 @@ page1_panel <- tabPanel(
     h4("Kupferwert (Cu):"),"Kupfer (Cu) ist für Fische zwar auch giftig, jedoch ist das Schwermetall für Garnelen noch deutlich toxischer.",br(),  
     h4("Phosphatwert (PO4):"),"Ein zu hoher Phosphatwert (PO4) im Aquarium steht im Verdacht, für Häutungsprobleme oder Missbildungen bei Garnelen und für mangelnde Zuchterfolge generell bei Krebstieren verantwortlich zu sein. Des weiteren kann ein zu hoher Phosphatgehalt im Aquarium die Ursache für Algenplagen sein.",br(),  
     h4("Eisenwert (Fe):"),"Eisen (Fe) brauchen die Aquarienpflanzen zur Ausbildung des Blattgrüns. Ohne Eisen keine Photosynthese und damit keine Energiegewinnung. Eisenmangel lässt zuerst die jungen Blätter und die Triebspitzen gelblich-blass wirken, während die Blattadern grün bleiben - die Pflanze entwickelt eine sogenannte Chlorose. Eisen gehört zu den Mikronährstoffen, die Pflanzen brauchen also nicht sehr viel davon. Ein zu hoher Eisenwert im Aquarium kann die Bildung von Rotalgen (Pinselalgen, Bartalgen, Froschlaichalgen und Co.) fördern.",br(),
-  ), br(),
+  ),
   
+  hr(),
+  p("Hinweise (Auszug aus moodle):",
   h4("Abgabe in Ihrer Gruppe:"),
-  p("Quellcode der Shiny-App in Moodle hochladen.", br(),h4("Abgabetermin ist der 28.06.2021 um 23:59."),
+  "Quellcode der Shiny-App in Moodle hochladen.", br(),h4("Abgabetermin ist der 28.06.2021 um 23:59."),
   "Stellen Sie sicher, dass dieser ausführbar ist und geben Sie die Quellen in der laufenden Shiny-App sichtbar an.", br(),
   "Stellen Sie Ihre Shiny-App auf https://www.shinyapps.io zur Verfügung und geben den Link an.",br(),br(),
   
@@ -56,8 +58,10 @@ page1_panel <- tabPanel(
        a(href = "http://nguyenkim.shinyapps.io/statistik_hausarbeit/", "Deployment auf shinyapps.io"),
        "Wasserwerte - Eigener Datensatz",
        a(href = "https://www.garnelio.de/blog/wasserchemie/die-wichtigsten-wasserwerte-im-aquarium", "Erläuterung der Wasserwerte"),
-       a(href = "https://www.aquaristik-hilfe.de/calc01.htm", "Erläuterung des CO2-Wertes")
-       
+       a(href = "https://www.aquaristik-hilfe.de/calc01.htm", "Erläuterung des CO2-Wertes"),
+       a(href = "https://statistikgrundlagen.de/ebook/chapter/konfidenzintervalle/", "Konfidenzintervalle erklärt"),
+       a(href = "https://rpubs.com/techanswers88/MeanAndConfidenceIntervals", "Mittelwert & Konfidenzintervalle in R"),
+       a(href = "http://www.mathcs.emory.edu/~fox/NewCCS/ModuleV/ModVP9.html", "Erläuterung der R-Funktion MeanCI")
       )
 )
 
@@ -74,7 +78,7 @@ page2_sidebar <- sidebarPanel(
     #select_values = colnames(data),
     #choices = colnames(data),
     #selected = "Speed"
-    choices = c( "Alle Werte", "Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
+    choices = c("Alle Werte", "Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
     selected = ""
   )
 )
@@ -114,19 +118,20 @@ page3_sidebar <- sidebarPanel(
     selected = "Temperatur"
   ),
   inputPanel(
-    sliderInput("upperBoundary", "Vertrauensniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
+    sliderInput("upperBoundary", "Konfidenzniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
   )
 )
 
 page3_main <- mainPanel(
   h3("Was machen Konfidenzintervalle?"),
   p(
-    "Bei einem Konfidenzintervall (auch bekannt unter Intervallschätzung), handelt es sich um ein Verfahren, einen Bereich zu bestimmen,", br(),
-    "in dem ein Paramter mit einer bestimmten Wahrscheinlichkeit (von z.b. 95% liegt.", br(),
-    "Diese Wahrscheinlichkeit wird auch Konfidenzniveau genannt.", br(),
-    "Wenn wir bspw. den durchschnittlichen Wert an CO2 im Aquarium schätzen möchten, würden wir bei einer Punktschätzung einen Wert von 12.758", br(),
-    "aus unserem Datensatz erhalten. Bei der Intervallschätzung geben wir einen Bereich an und", br(),
-    "machen eine Aussage dass der Mittelwert mit einer Wahrscheinlichkeit von 95% zwischen 6.881 und 18.636 liegt."
+    "Bei einem Konfidenzintervall (auch bekannt unter Intervallschätzung), handelt es sich um ein Verfahren,",br(),
+    "einen Bereich zu bestimmen, in dem ein Paramter mit einer bestimmten Wahrscheinlichkeit (von z.b. 95%) liegt.", br(),
+    "Diese Wahrscheinlichkeit wird auch Konfidenzniveau genannt. Wenn wir bspw. den durchschnittlichen Wert an CO2", br(),
+    "im Aquarium schätzen möchten, würden wir bei einer Punktschätzung einen Wert von 12.758 erhalten.", br(),
+    "Bei der Intervallschätzung geben wir einen Bereich an und machen eine Aussage dass der Mittelwert", br(),
+    "mit einer Wahrscheinlichkeit von 95% zwischen 6.881 und 18.636 liegt.", br(), br(),
+    "Mehr zu Konfidenzintervallen gibt es hier: ",a(href = "https://statistikgrundlagen.de/ebook/chapter/konfidenzintervalle/", "Statistikgrundlagen/Konfidenzintervalle"),
   ),
   br(),
   h3("Hier werden berechnete Daten ausgegeben."),
