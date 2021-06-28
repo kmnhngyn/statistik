@@ -3,8 +3,8 @@
 # Nguyen, Kim Anh 563958
 # Melchert, Niklas 560671
 #
-# Zusammenführung von Logik ui.R
-# und dem interface app.R.
+# Zusammenführung von Logik server.R
+# und dem interface ui.R.
 # 
 
 ---
