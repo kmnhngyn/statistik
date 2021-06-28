@@ -229,7 +229,7 @@ server <- function(input, output) {
   # das niveau basiert auf auswahl von user
   #
   calculateCI <- reactive({
-    mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = input$upperBoundary)
+    mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = (input$upperBoundary/100))
     mCI <- as.data.frame(t(mCI))
     return(mCI)
   })
@@ -239,7 +239,7 @@ server <- function(input, output) {
   # aus Funktion calculateCI(), um später auf die Werte zugreifen zu können
   #
   ci_table_dynamic <- reactive({
-    mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = input$upperBoundary, na.rm = TRUE)
+    mCI <- MeanCI(getKonfiTable()[, c(input$page3)], conf.level = (input$upperBoundary/100), na.rm = TRUE)
     
     ci_dt = data.table(
       Parameter = c(input$page3),
@@ -256,8 +256,8 @@ server <- function(input, output) {
   output$konfiParameters <- renderUI({
     str1 <- paste("Standardabweichung für ", input$page3, ": ", round(getKonfiStabw(),3))
     str2 <- paste("Mittelwert für ", input$page3, ": ", round(calculateCI()[, c("mean")],3))
-    str3 <- paste("Unterer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("lwr.ci")],3))
-    str4 <- paste("Oberer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("upr.ci")],3))
+    str3 <- paste("Unterer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("lwr.ci")],3), "(bei ", input$upperBoundary, "% Konfidenzniveau)")
+    str4 <- paste("Oberer Wert Konfidenzintervall für ", input$page3, ": ", round(calculateCI()[, c("upr.ci")],3), "(bei ", input$upperBoundary, "% Konfidenzniveau)")
     HTML(paste(str1, str2, str3, str4, sep = '<br/>'))
   })
   
@@ -266,22 +266,13 @@ server <- function(input, output) {
   # Hier wird das Konfidenzintervall geplottet
   # 
   output$konfiPlot <- renderPlot({
-    #### TEST
     # https://rpubs.com/techanswers88/MeanAndConfidenceIntervals
     ggplot(data = ci_table_dynamic()) +
       geom_bar(aes(x=Parameter, y=mean, fill = Parameter), stat = "identity", fill = "#69b3a2", alpha =0.7) +
       geom_errorbar(aes(x=Parameter, ymin=lwr.ci, ymax=upr.ci), width = 0.2, color = "red", size =1) +
       geom_text(aes(x=Parameter, y=lwr.ci, label = round(lwr.ci,3)), size= 3, vjust = 2) +
       geom_text(aes(x=Parameter, y=upr.ci, label = round(upr.ci,3)), size= 3, vjust = -1) +
-      labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary*100, "% Vertrauensniveau")) +
+      labs(title = paste("Konfidenzintervall für ", input$page3, " mit ", input$upperBoundary, "% Konfidenzniveau")) +
       labs(x= "Parameter", y = "Mittelwert des Parameters")
-  })
-  
-  #
-  #PLOT: Histogramm der Werte
-  #Inkl. einzeichnen der Boundarys
-  #
-  output$konfiHisto <- renderPlot({
-    ggplot(getKonfiTable()[, c(input$page3)], aes(x=weight)) + geom_histogram()
   })
 }

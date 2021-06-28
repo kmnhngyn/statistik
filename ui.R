@@ -117,9 +117,9 @@ page3_sidebar <- sidebarPanel(
     choices = c("Temperatur","Ammoniak","pH","Nitrit.NO2", "Nitrat.NO3","Phosphat.PO4","kH","GH","Fe","CO2"),
     selected = "Temperatur"
   ),
-  inputPanel(
-    sliderInput("upperBoundary", "Konfidenzniveau bestimmen", min = 0, max = 0.99, step = 0.01, value = 0.95)
-  )
+  # inputPanel(
+    sliderInput("upperBoundary", "Konfidenzniveau in % bestimmen", min = 0, max = 99, step = 1, value = 95)
+  # )
 )
 
 page3_main <- mainPanel(
